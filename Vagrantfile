@@ -15,18 +15,21 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 5000, host: 8080
 
-  config.vm.provision "file", source: "~/hello.py", destination: "hello.py"
+  config.vm.provision "file", source: "./hello.py", destination: "hello.py"
   
   # Enable provisioning with a shell script. Additional provisioners such as
   # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
-  	sudo apt update
-  	sudo apt install git nano vim python-is-python3 python3-venv python3-pip
-	python -m venv flask_venv
-	source flask_venv/bin/activate
-	pip install Flask
-  SHELL
+
+  $script = <<-SCRIPT
+  sudo apt update
+  sudo apt -y install git nano vim python-is-python3 python3-venv python3-pip
+  python -m venv flask_venv
+  source flask_venv/bin/activate
+  pip install Flask
+  SCRIPT
+  
+  config.vm.provision "shell", inline: $script
 end
